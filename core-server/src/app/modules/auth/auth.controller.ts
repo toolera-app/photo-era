@@ -159,10 +159,23 @@ const adminDashboardLogin = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const myProfileDetails = catchAsync(async (req: Request, res: Response) => {
+  const result = await CustomerAuthService.myProfileDetails(req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully fetched profile details!",
+    data: result,
+  });
+});
+
 export const AuthController = {
   customerSignUp,
   googleAuth,
   customerLogin,
+  myProfileDetails,
 
   // vendorGoogleAuth,
   superAdminSignUp,

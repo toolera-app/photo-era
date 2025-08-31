@@ -6,6 +6,8 @@ import { AuthValidation } from "./auth.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import passport from "passport";
 import config from "../../../config";
+import auth from "../../middlewares/auth";
+import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
@@ -51,6 +53,8 @@ router.get("/success", (req, res) => {
     message: "Authentication Completed!",
   });
 });
+
+router.get("/my-profile", auth(UserRole.USER, UserRole.ADMIN), AuthController.myProfileDetails);
 
 // ! customer Login
 router.post("/customer-login", validateRequest(AuthValidation.emailLogin), AuthController.customerLogin);

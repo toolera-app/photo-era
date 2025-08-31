@@ -7,6 +7,8 @@ import ApiError from "../../../../errors/ApiError";
 import config from "../../../../config";
 import { createJWTTokens } from "../auth.utils";
 import { UserRole } from "@prisma/client";
+import { IRequestUser } from "../../../interfaces/global.interfaces";
+import { Request } from "express";
 
 // ! customer email registration
 const customerSignUp = async (data: IUserCreate): Promise<ILoginUserResponse> => {
@@ -104,8 +106,31 @@ const customerLogin = async (data: IUserCreate): Promise<ILoginUserResponse> => 
   return createJWTTokens(details);
 };
 
+const myProfileDetails = async (req: Request) => {
+  const { userId } = req.user as IRequestUser;
+
+  const findCreditBalance = await prisma.creditBalance.findUnique({
+    where: { userId },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { userId },
+    select: {
+      email: true,
+      name: true,
+      mobileNumber: true,
+    },
+  });
+
+  return {
+    ...user,
+    creditBalance: findCreditBalance?.creditBalance,
+  };
+};
+
 export const CustomerAuthService = {
   customerSignUp,
   getSingleCustomerUser,
   customerLogin,
+  myProfileDetails,
 };
