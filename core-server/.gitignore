@@ -1,0 +1,17 @@
+node_modules
+# local env files
+.env*.local
+.env
+
+.vercel
+
+dist
+logs
+data
+uploads
+yarn.lock
+
+/prisma/migrations/
+bun.lockb
+package-lock.json
+bun.lock

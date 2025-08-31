@@ -1,0 +1,13 @@
+model ImageGenerate {
+  imageGenerateId   String         @id @default(cuid())
+  userId            String
+  user              user           @relation(fields: [userId], references: [userId])
+  textPrompt        String
+  perImageCreditId  String
+  perImageCredit    perImageCredit @relation(fields: [perImageCreditId], references: [perImageCreditId])
+  modelImageUrl     String
+  productImageUrl   String
+  generatedImageUrl String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}

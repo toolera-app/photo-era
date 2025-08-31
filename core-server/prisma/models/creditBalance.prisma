@@ -1,0 +1,32 @@
+// Per Image Credit For Image Generate
+
+model perImageCredit {
+  perImageCreditId String          @id @default(cuid())
+  creditCharged    Float           @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  imageGenerate    ImageGenerate[]
+}
+
+// User Credit balance
+model CreditBalance {
+  creditBalanceId          String                     @id @default(cuid())
+  userId                   String                     @unique
+  creditBalance            Float                      @default(0)
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  user                     user[]
+  creditBalanceTransaction CreditBalanceTransaction[]
+}
+
+model CreditBalanceTransaction {
+  creditBalanceTransactionId String        @id @default(cuid())
+  creditBalanceId            String
+  creditBalance              CreditBalance @relation(fields: [creditBalanceId], references: [creditBalanceId])
+  previousCreditBalance      Float
+  creditBalanceTotal         Float
+  orderId                    String
+  order                      Order         @relation(fields: [orderId], references: [orderId])
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+}

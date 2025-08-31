@@ -1,0 +1,20 @@
+model Order {
+  orderId                  String                     @id @default(cuid())
+  userId                   String
+  user                     user                       @relation(fields: [userId], references: [userId])
+  paymentNumber            String
+  amount                   Float
+  transactionId            String                     @unique
+  reference                String?
+  imageCredit              Float
+  orderStatus              OrderStatus                @default(PENDING)
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  creditBalanceTransaction CreditBalanceTransaction[]
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

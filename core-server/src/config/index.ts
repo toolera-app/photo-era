@@ -1,0 +1,72 @@
+import dotenv from "dotenv";
+import path from "path";
+import { z } from "zod";
+
+// Load .env file
+dotenv.config({ path: path.join(process.cwd(), ".env") });
+
+// Zod validation schema
+const envVarsSchema = z.object({
+  NODE_ENV: z.string(),
+  PORT: z.string(),
+  DATABASE_URL: z.string(),
+  BCRYPT_SALT_ROUNDS: z.string(),
+  JWT_SECRET: z.string(),
+  JWT_REFRESH_SECRET: z.string(),
+  JWT_EXPIRES_IN: z.string(),
+  JWT_REFRESH_EXPIRES_IN: z.string(),
+  JWT_FORGET_PASSWORD: z.string(),
+  JWT_FORGET_PASSWORD_EXPIRES_IN: z.string(),
+  REDIS_URL: z.string(),
+  EXPIRES_IN: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_CALLBACK_URL: z.string(),
+  business_site_url: z.string(),
+  vendor_dashboard_site_url: z.string().optional(),
+});
+
+// Parse and validate env vars
+const env = envVarsSchema.parse(process.env);
+
+// Export config
+export default {
+  env: env.NODE_ENV,
+  port: env.PORT,
+  database_url: env.DATABASE_URL,
+  bcrypt_salt_rounds: env.BCRYPT_SALT_ROUNDS,
+  jwt: {
+    secret: env.JWT_SECRET,
+    refresh_secret: env.JWT_REFRESH_SECRET,
+    expires_in: env.JWT_EXPIRES_IN,
+    refresh_expires_in: env.JWT_REFRESH_EXPIRES_IN,
+    forget_password_token: env.JWT_FORGET_PASSWORD,
+    forget_password_expires_in: env.JWT_FORGET_PASSWORD_EXPIRES_IN,
+  },
+  redis: {
+    url: env.REDIS_URL,
+    expires_in: env.EXPIRES_IN,
+  },
+  googleAuth: {
+    googleClientId: env.GOOGLE_CLIENT_ID,
+    googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+    googleCallbackURL: env.GOOGLE_CALLBACK_URL,
+  },
+
+  business_site_url: env.business_site_url,
+
+  vendor_dashboard_site_url: env.vendor_dashboard_site_url,
+
+  REMBG_URL: process.env.REMBG_URL,
+
+  TRYON_PROVIDER: process.env.TRYON_PROVIDER,
+
+  REPLICATE_API_TOKEN: process.env.REPLICATE_API_TOKEN,
+
+  REPLICATE_MODEL: process.env.REPLICATE_MODEL,
+
+  REPLICATE_VERSION: process.env.REPLICATE_VERSION,
+  REPLICATE_TEXT_MODEL: process.env.REPLICATE_TEXT_MODEL,
+
+  STATIC_DIR: process.env.STATIC_DIR,
+};
