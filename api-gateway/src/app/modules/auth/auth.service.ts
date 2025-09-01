@@ -4,8 +4,6 @@ import { Request } from "express";
 import { IGenericResponseRedis } from "../../../interfaces/common";
 import { CoreService as HttpService } from "../../../shared/axios";
 import { getAuthHeaderDetails } from "../../../utils/getAuthHeaderDetails";
-import ApiError from "../../../errors/ApiError";
-import httpStatus from "http-status";
 
 // ! ---Customer registration
 
@@ -46,31 +44,14 @@ const customerLoginService = async (req: Request): Promise<IGenericResponseRedis
   });
   return response;
 };
-// ! ---Vendor registration
 
-const vendorRegistration = async (req: Request): Promise<IGenericResponseRedis> => {
-  const requestedData = JSON.parse(req?.body?.data);
-  if (!req?.body?.files) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Images are required!");
-  }
-  const obj = {
-    ...requestedData,
-    files: req?.body?.files,
-  };
-
-  const response: IGenericResponseRedis = await HttpService.post(`/auth/vendor-registration`, obj, {
+const myProfileView = async (req: Request): Promise<IGenericResponseRedis> => {
+  const response: IGenericResponseRedis = await HttpService.get("/auth/my-profile", {
     headers: getAuthHeaderDetails(req),
   });
   return response;
 };
 
-// ! ---Vendor login
-const vendorLoginService = async (req: Request): Promise<IGenericResponseRedis> => {
-  const response: IGenericResponseRedis = await HttpService.post("/auth/vendor-login", req.body, {
-    headers: getAuthHeaderDetails(req),
-  });
-  return response;
-};
 // ! check user exist
 const checkUserExist = async (req: Request): Promise<IGenericResponseRedis> => {
   const response: IGenericResponseRedis = await HttpService.post("/auth/check-user-exist", req.body, {
@@ -105,11 +86,9 @@ export const AuthService = {
   customerAuthSuccessService,
   customerLoginService,
   //
-  vendorRegistration,
-  vendorLoginService,
-  //
   createSuperAdminService,
   adminDashboardLoginService,
   //
   checkUserExist,
+  myProfileView,
 };

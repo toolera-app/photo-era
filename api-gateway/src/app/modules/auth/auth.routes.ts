@@ -1,6 +1,5 @@
 import express from "express";
 import { AuthController } from "./auth.controller";
-import { awsFileUploadHelper } from "../../../helpers/aws_file_uploader/awsFileUploadStorage";
 
 const router = express.Router();
 
@@ -17,14 +16,10 @@ router.get("/success", AuthController.customerAuthSuccessController);
 // ! ---Customer login
 router.post("/customer-login", AuthController.customerLoginController);
 
+router.get("/my-profile", AuthController.myProfileView);
+
 // !vendor auth generate ---------
 router.post("/check-user-exist", AuthController.checkUserExist);
-
-// ! vendor login
-router.post("/vendor-login", AuthController.vendorLogin);
-
-// ! vendor registration
-router.post("/vendor-registration", awsFileUploadHelper.uploadVendorUserImages, AuthController.vendorRegistration);
 
 // ! create super admin
 router.post("/create-superadmin", AuthController.createSuperAdminController);

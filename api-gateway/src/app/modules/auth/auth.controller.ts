@@ -92,67 +92,11 @@ const customerLoginController = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 };
-// ! ---Vendor registration
-const vendorRegistration = async (req: Request, res: Response, next: NextFunction) => {
+
+const myProfileView = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await AuthService.vendorRegistration(req);
-    const { accessToken, refreshToken } = response?.data || {};
-
-    // Detect HTTPS
-    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
-
-    // set refresh token into cookie
-    const cookieOptions: CookieOptions = {
-      httpOnly: true,
-      secure: isSecure,
-      sameSite: (isSecure ? "none" : "lax") as CookieOptions["sameSite"], // ✅ type-safe
-      path: "/",
-    };
-
-    res.cookie("refreshToken", refreshToken, cookieOptions);
-
-    const obj = {
-      statusCode: response?.statusCode,
-      success: response?.success,
-      message: response?.message,
-      data: {
-        accessToken,
-      },
-    };
-    sendResponse(res, obj);
-  } catch (error) {
-    next(error);
-  }
-};
-
-// ! ---Vendor login
-const vendorLogin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const response = await AuthService.vendorLoginService(req);
-    const { accessToken, refreshToken } = response?.data || {};
-
-    // Detect HTTPS
-    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
-
-    // set refresh token into cookie
-    const cookieOptions: CookieOptions = {
-      httpOnly: true,
-      secure: isSecure,
-      sameSite: (isSecure ? "none" : "lax") as CookieOptions["sameSite"], // ✅ type-safe
-      path: "/",
-    };
-
-    res.cookie("refreshToken", refreshToken, cookieOptions);
-
-    const obj = {
-      statusCode: response?.statusCode,
-      success: response?.success,
-      message: response?.message,
-      data: {
-        accessToken,
-      },
-    };
-    sendResponse(res, obj);
+    const response = await AuthService.myProfileView(req);
+    sendResponse(res, response);
   } catch (error) {
     next(error);
   }
@@ -218,10 +162,8 @@ export const AuthController = {
   getCustomerGoogleAuthController,
   customerAuthSuccessController,
   customerLoginController,
-  //
-  vendorRegistration,
-  vendorLogin,
   checkUserExist,
+  myProfileView,
   //
   createSuperAdminController,
   adminDashboardLoginController,
