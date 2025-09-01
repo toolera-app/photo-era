@@ -1,7 +1,7 @@
 import express from "express";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
-import { TryOnController } from "./photoQuivers.controller";
+import { TryOnController } from "./photoEra.controller";
 import multer from "multer";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.post("/remove_bg", upload.single("garment"), TryOnController.removeBg);
 
 router.post(
   "/tryon",
-  auth(UserRole.USER, UserRole.ADMIN), // authenticate first (sets req.user)
+  auth(UserRole.USER, UserRole.ADMIN),
   upload.fields([
     { name: "customer", maxCount: 1 },
     { name: "garment", maxCount: 1 },
@@ -24,4 +24,4 @@ router.post(
   TryOnController.tryon,
 );
 
-export const photoQuivers = router;
+export const photoEra = router;

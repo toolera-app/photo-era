@@ -8,6 +8,7 @@ import { BlogRoutes } from "../modules/blogs/blogs.routes";
 import { PromQLRoutes } from "../modules/promql_matrix/metrics.route";
 import { PerImageCreditRoutes } from "../modules/perImageCredit/perImageCredit.routes";
 import { OrderRoutes } from "../modules/order/order.routes";
+import { photoEraRoutes } from "../modules/photo-era/photo-era.routes";
 
 const router = express.Router();
 
@@ -39,6 +40,10 @@ const moduleRoutes = [
   {
     path: "/orders",
     routes: OrderRoutes,
+  },
+  {
+    path: "/photo",
+    routes: photoEraRoutes,
   },
   {
     path: "/metrics",

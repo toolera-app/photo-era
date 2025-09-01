@@ -1,7 +1,7 @@
 import Replicate from "replicate";
 import { v4 as uuidv4 } from "uuid";
 import config from "../../../config";
-import { getBufferFromUrl } from "./photoQuivers.http.utils";
+import { getBufferFromUrl } from "./photoEra.http.utils";
 
 const replicate = config.REPLICATE_API_TOKEN ? new Replicate({ auth: config.REPLICATE_API_TOKEN }) : null;
 const modelRef = config.REPLICATE_MODEL && config.REPLICATE_VERSION ? `${config.REPLICATE_MODEL}:${config.REPLICATE_VERSION}` : null;

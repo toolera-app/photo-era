@@ -3,7 +3,7 @@ import path from "path";
 import sharp from "sharp";
 import { v4 as uuidv4 } from "uuid";
 import config from "../../../config";
-import { toBuffer } from "./photoQuivers.buffer.utils";
+import { toBuffer } from "./photoEra.buffer.utils";
 
 export const ensurePngBuffer = (input: Buffer) => {
   return sharp(input).png({ force: true }).toBuffer();

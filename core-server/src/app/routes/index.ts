@@ -1,7 +1,7 @@
 import express from "express";
 import { AuthRoutes } from "../modules/auth/auth.routes";
 import { PromQLRoutes } from "../modules/promql_matrix/metrics.route";
-import { photoQuivers } from "../modules/photoQuivers/photoQuivers.route";
+import { photoEra } from "../modules/photoEra/photoEra.route";
 import { PerImageCreditRoutes } from "../modules/perImageCredit/perImageCredit.routes";
 import { OrderRoutes } from "../modules/order/order.routes";
 
@@ -18,7 +18,7 @@ const moduleRoutes = [
   },
   {
     path: "/photo",
-    route: photoQuivers,
+    route: photoEra,
   },
   {
     path: "/per-image-credit",

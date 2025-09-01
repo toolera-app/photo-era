@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { Express, Request, Response } from "express";
 import httpStatus from "http-status";
-import { TryOnService } from "./photoQuivers.service";
+import { TryOnService } from "./photoEra.service";
 import sendResponse from "../../../shared/sendResponse";
 import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";

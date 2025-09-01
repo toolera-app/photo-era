@@ -4,11 +4,11 @@ import httpStatus from "http-status";
 import config from "../../../config";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { generateTryOnPrompt } from "./photoQuivers.promt.utils"; // still available for a separate textPrompt endpoint
-import { ensurePngBuffer, saveTemp } from "./photoQuivers.image";
-import { toBuffer } from "./photoQuivers.buffer.utils";
-import { fetchWithFormData } from "./photoQuivers.http.utils";
-import { runReplicate } from "./photoQuivers.replicateClient";
+import { generateTryOnPrompt } from "./photoEra.promt.utils"; // still available for a separate textPrompt endpoint
+import { ensurePngBuffer, saveTemp } from "./photoEra.image";
+import { toBuffer } from "./photoEra.buffer.utils";
+import { fetchWithFormData } from "./photoEra.http.utils";
+import { runReplicate } from "./photoEra.replicateClient";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 
 const healthz = async () => ({ ok: true, provider: config.TRYON_PROVIDER || "none" });
