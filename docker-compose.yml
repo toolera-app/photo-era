@@ -1,0 +1,14 @@
+services:
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    command: server /data --console-address ":2001"
+    ports:
+      - "2000:2000"
+      - "2001:2001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      # Windows path with forward slashes works well
+      - ./minio-data:/data

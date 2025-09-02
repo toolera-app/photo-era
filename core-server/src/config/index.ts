@@ -69,4 +69,12 @@ export default {
   REPLICATE_TEXT_MODEL: process.env.REPLICATE_TEXT_MODEL,
 
   STATIC_DIR: process.env.STATIC_DIR,
+
+  MINIO_ENDPOINT: process.env.MINIO_ENDPOINT!,
+  MINIO_PORT: process.env.MINIO_PORT || "9000",
+  MINIO_USE_SSL: process.env.MINIO_USE_SSL || "false",
+  MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY!,
+  MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY!,
+  MINIO_BUCKET_IMAGES: process.env.MINIO_BUCKET_IMAGES || "photo-era",
+  MINIO_PUBLIC_BASE_URL: process.env.MINIO_PUBLIC_BASE_URL || "",
 };
