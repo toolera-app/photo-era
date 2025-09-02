@@ -57,6 +57,8 @@ export default {
 
   vendor_dashboard_site_url: env.vendor_dashboard_site_url,
 
+  // Replicate inference platform
+
   REMBG_URL: process.env.REMBG_URL,
 
   TRYON_PROVIDER: process.env.TRYON_PROVIDER,
@@ -70,6 +72,7 @@ export default {
 
   STATIC_DIR: process.env.STATIC_DIR,
 
+  // Object Storage
   MINIO_ENDPOINT: process.env.MINIO_ENDPOINT!,
   MINIO_PORT: process.env.MINIO_PORT || "9000",
   MINIO_USE_SSL: process.env.MINIO_USE_SSL || "false",
@@ -77,4 +80,14 @@ export default {
   MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY!,
   MINIO_BUCKET_IMAGES: process.env.MINIO_BUCKET_IMAGES || "photo-era",
   MINIO_PUBLIC_BASE_URL: process.env.MINIO_PUBLIC_BASE_URL || "",
+
+  // Fal Ai inference platform
+  FAL_KEY: process.env.FAL_KEY || "",
+  FAL_MODEL: process.env.FAL_MODEL || "",
+  MAX_IMAGE_DIMENSION: Number(process.env.MAX_IMAGE_DIMENSION || 1024),
+
+  //Rate Limit
+  RATE_LIMIT_MAX_HITS: process.env.RATE_LIMIT_MAX_HITS,
+  RATE_LIMIT_WINDOW_MS: process.env.RATE_LIMIT_WINDOW_MS,
+  RATE_LIMIT_PENALTY_MS: process.env.RATE_LIMIT_PENALTY_MS,
 };

@@ -4,6 +4,7 @@ import { PromQLRoutes } from "../modules/promql_matrix/metrics.route";
 import { photoEra } from "../modules/photoEra/photoEra.route";
 import { PerImageCreditRoutes } from "../modules/perImageCredit/perImageCredit.routes";
 import { OrderRoutes } from "../modules/order/order.routes";
+import { productImageGenerateRouter } from "../modules/productImage/productImage.route";
 
 const router = express.Router();
 
@@ -19,6 +20,10 @@ const moduleRoutes = [
   {
     path: "/photo",
     route: photoEra,
+  },
+  {
+    path: "/product-image",
+    route: productImageGenerateRouter,
   },
   {
     path: "/per-image-credit",

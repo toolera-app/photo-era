@@ -1,49 +1,39 @@
+// src/modules/flux-kontext/fluxKontext.service.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Express, Request } from "express";
 import httpStatus from "http-status";
-import config from "../../../config";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { generateTryOnPrompt } from "./photoEra.prompt.utils"; // still available for a separate textPrompt endpoint
-import { ensureMaxSize, ensurePngBuffer, saveTemp } from "./photoEra.image";
-import { runReplicate } from "./photoEra.replicateClient";
 import { IRequestUser } from "../../interfaces/global.interfaces";
+import { ensureMaxSize, ensurePngBuffer, saveTemp } from "../photoEra/photoEra.image";
+import { runImageModel } from "./productImage.falClient";
+import { getBufferFromUrl } from "../photoEra/photoEra.http.utils";
 
-/**
- * Optional helper: generate a prompt suggestion elsewhere (NOT used in tryon)
- */
-const textPrompt = async ({ notes, product }: { notes: string; product: string }) => {
-  return await generateTryOnPrompt({ notes, product });
-};
+const ProductImageGenerate = async (req: Request) => {
+  // single file only: "input"
+  const single = (req as any).file as Express.Multer.File | undefined;
+  const files = (req as any).files as Record<string, Express.Multer.File[]> | undefined;
+  const imageFile = single ?? files?.input?.[0];
+  if (!imageFile) throw new ApiError(httpStatus.BAD_REQUEST, "Missing 'input' file");
 
-export const tryon = async (req: Request) => {
-  // Files via multer fields: 'customer' (person) and 'garment'
-  const files = req.files as Record<string, Express.Multer.File[]>;
-  const personFile = files?.customer?.[0];
-  const garmentFile = files?.garment?.[0];
-  if (!personFile || !garmentFile) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Missing 'customer' or 'garment'");
-  }
-
-  // Authenticated user (auth middleware populates req.user)
+  // auth
   const { userId } = (req.user || {}) as IRequestUser;
   if (!userId) throw new ApiError(httpStatus.UNAUTHORIZED, "User Not Found");
 
-  const { prompt } = req.body || {};
+  // REQUIRED prompt (must be provided by frontend, AI or manual)
+  const { prompt } = (req.body || {}) as { prompt?: string };
   const used_prompt = typeof prompt === "string" ? prompt.trim() : "";
   if (!used_prompt) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Prompt is required to generate.");
   }
 
-  // Pick the latest per-image credit plan
+  // pricing plan & balance
   const plan = (await prisma.perImageCredit.findFirst({ orderBy: { updatedAt: "desc" } })) || (await prisma.perImageCredit.findFirst({ orderBy: { createdAt: "desc" } }));
-
   if (!plan) throw new ApiError(httpStatus.NOT_FOUND, "No per-image credit plan configured");
 
   const toDeduct = plan.creditCharged;
   const perImageCreditId = plan.perImageCreditId;
 
-  // Pre-check user's balance
   const preBalance = await prisma.creditBalance.findUnique({
     where: { userId },
     select: { creditBalance: true },
@@ -52,32 +42,23 @@ export const tryon = async (req: Request) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Insufficient credit balance");
   }
 
-  // Prepare input images
-  let personPng = await ensureMaxSize(await ensurePngBuffer(personFile.buffer));
-  let garmentPng = await ensureMaxSize(await ensurePngBuffer(garmentFile.buffer));
+  // input buffer → save to MinIO → get URL for fal
+  const inputPng = await ensureMaxSize(await ensurePngBuffer(imageFile.buffer));
 
-  // Provider check
-  if (config.TRYON_PROVIDER !== "replicate") {
-    throw new ApiError(httpStatus.BAD_REQUEST, `Unknown TRYON_PROVIDER=${config.TRYON_PROVIDER}`);
-  }
+  const inputImageUrl = await saveTemp(inputPng, { userId, kind: "person" });
 
-  // Run the model
-  const { error, resultBuffer, raw } = await runReplicate({
-    personPng,
-    garmentPng,
-    prompt: used_prompt,
-  });
+  // fal.ai run (Kontext)
+  const { error, outputUrl, raw } = await runImageModel({ imageUrl: inputImageUrl, prompt: used_prompt });
   if (error) throw new ApiError(httpStatus.UNPROCESSABLE_ENTITY, error);
-  if (!resultBuffer) {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Unexpected replicate output: ${String(raw).slice(0, 200)}`);
+  if (!outputUrl) {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Unexpected fal output: ${String(raw).slice(0, 200)}`);
   }
 
-  // Persist images (URLs)
-  const modelImageUrl = await saveTemp(personPng, { userId, kind: "person" });
-  const productImageUrl = await saveTemp(garmentPng, { userId, kind: "garment" });
+  // store result
+  const resultBuffer = await getBufferFromUrl(outputUrl);
   const generatedImageUrl = await saveTemp(resultBuffer, { userId, kind: "result" });
 
-  // Deduct balance and create ImageGenerate atomically
+  // deduct & persist
   const imageGen = await prisma.$transaction(async (tx) => {
     const balance = await tx.creditBalance.findUnique({
       where: { userId },
@@ -96,8 +77,8 @@ export const tryon = async (req: Request) => {
         userId,
         textPrompt: used_prompt,
         perImageCreditId,
-        modelImageUrl,
-        productImageUrl,
+        modelImageUrl: inputImageUrl,
+        productImageUrl: "",
         generatedImageUrl,
       },
       select: {
@@ -111,7 +92,7 @@ export const tryon = async (req: Request) => {
   });
 
   return {
-    provider: "replicate",
+    provider: "fal",
     used_prompt,
     deducted: toDeduct,
     perImageCreditId,
@@ -120,7 +101,6 @@ export const tryon = async (req: Request) => {
   };
 };
 
-export const TryOnService = {
-  textPrompt, // optional helper for a separate endpoint if needed
-  tryon,
+export const productImageService = {
+  ProductImageGenerate,
 };

@@ -82,6 +82,42 @@ const disconnect = async (): Promise<void> => {
   }
 };
 
+// Cache for loaded Lua scripts
+const _scriptShaCache = new Map<string, string>();
+
+/**
+ * Atomically run a Lua script. Caches SHA so subsequent calls use EVALSHA.
+ * @param lua  The Lua script source
+ * @param keys Redis keys (KEYS[n])
+ * @param argv Arguments (ARGV[n])
+ */
+const evalScript = async (lua: string, keys: string[] = [], argv: Array<string | number> = []) => {
+  try {
+    let sha = _scriptShaCache.get(lua);
+    if (!sha) {
+      sha = await (redisClient as any).scriptLoad(lua); // node-redis v4: scriptLoad
+      _scriptShaCache.set(lua, sha as any);
+    }
+    // EVALSHA with variadic args
+    return await (redisClient as any).evalSha(sha, {
+      keys,
+      arguments: argv.map((v) => String(v)),
+    });
+  } catch (error) {
+    try {
+      const sha = await (redisClient as any).scriptLoad(lua);
+      _scriptShaCache.set(lua, sha);
+      return await (redisClient as any).evalSha(sha, {
+        keys,
+        arguments: argv.map((v) => String(v)),
+      });
+    } catch (err) {
+      handleError("Redis evalScript", err);
+      throw err;
+    }
+  }
+};
+
 export const RedisClient = {
   connect,
   disconnect,
@@ -93,4 +129,5 @@ export const RedisClient = {
   delAccessToken,
   publish: redisPubClient.publish.bind(redisPubClient),
   subscribe: redisSubClient.subscribe.bind(redisSubClient),
+  evalScript,
 };
