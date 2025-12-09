@@ -24,7 +24,7 @@ const Navbar = () => {
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/tools"
               className="text-gray-900 hover:text-gray-600 transition-colors font-medium"
@@ -43,11 +43,11 @@ const Navbar = () => {
             >
               Pricing
             </Link>
-          </div>
+          </div> */}
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Link
+            {/* <Link
               href="/login"
               className="text-gray-900 hover:text-gray-600 transition-colors font-medium"
             >
@@ -58,7 +58,12 @@ const Navbar = () => {
               className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors font-medium"
             >
               Signup
-            </Link>
+            </Link> */}
+             <p
+              className="px-6 py-2 bg-yellow-500 text-white hover:bg-blue-600 transition-colors font-medium"
+            >
+              Coming Soon
+            </p>
           </div>
 
           {/* Mobile Menu Button */}

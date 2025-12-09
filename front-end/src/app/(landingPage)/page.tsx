@@ -23,10 +23,10 @@ const page = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
           <div className="text-center">
             {/* Subtitle Text */}
-            <p className="text-gray-700 text-sm mb-8">
+            {/* <p className="text-gray-700 text-sm mb-8">
               Jani Na Ki diben but diyen kisu ekta, onlent wrote korar somoy pai
               nai bhai
-            </p>
+            </p> */}
 
             {/* Main Heading */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
