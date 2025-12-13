@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Sidebar } from "./Sidebar";
-import { ModelSelector } from "./ModelSelector";
+// import { useState } from "react";
+// import { Sidebar } from "./Sidebar";
+// import { ModelSelector } from "./ModelSelector";
 import { Badge, Text, Card, SimpleGrid } from "@mantine/core";
 
 export function Dashboard() {
-  const [selectedTool, setSelectedTool] = useState("ai-fashion-model");
+  // const [selectedTool, setSelectedTool] = useState("ai-fashion-model");
 
   // Define the workflow cards similar to the UI in the image
   const workflowCards = [
@@ -63,7 +63,7 @@ export function Dashboard() {
   return (
     <div className="h-screen flex bg-white">
       {/* Sidebar */}
-      <Sidebar selectedTool={selectedTool} onToolSelect={setSelectedTool} />
+      {/* <Sidebar selectedTool={selectedTool} onToolSelect={setSelectedTool} /> */}
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto">

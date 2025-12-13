@@ -1,6 +1,6 @@
 "use client";
 
-import { Text, NavLink, Badge } from "@mantine/core";
+import { Text, NavLink } from "@mantine/core";
 import { IconShirt, IconHelp } from "@tabler/icons-react";
 import Link from "next/link";
 
