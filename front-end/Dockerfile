@@ -1,8 +1,22 @@
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+# build stage
+FROM node:lts-alpine
+# Set the working directory inside the container  
+WORKDIR /app  
+
+# Copy package.json and package-lock.json to the container  
+COPY package.json ./  
+
+# Install dependencies  
+RUN npm install --legacy-peer-deps
+
+# Copy the app source code to the container  
+COPY . .  
+
+# Build the Next.js app  
 RUN npm run build
+
+# Expose the port the app will run on  
 EXPOSE 4000
-CMD ["npm", "run", "start", "--", "-p", "4000"]
+
+# Start the app  
+CMD ["npm", "start"]  
